@@ -94,3 +94,35 @@ def getAccountBalances(apiUrl, token, accountNumber):
     objJson = json.loads(webResponse.text)
 
     return objJson["data"]
+
+
+def getEquityOptionChains(apiUrl, token, ticker):
+    url = apiUrl + "/option-chains/" + ticker + "/nested"
+
+    payload = {}
+    files = []
+    headers = {"Authorization": token}
+
+    webResponse = requests.request(
+        "GET", url, headers=headers, data=payload, files=files
+    )
+
+    objJson = json.loads(webResponse.text)
+
+    return objJson["data"]["items"]
+
+
+def getFutureOptionChains(apiUrl, token, ticker):
+    url = apiUrl + "/futures-option-chains/" + ticker + "/nested"
+
+    payload = {}
+    files = []
+    headers = {"Authorization": token}
+
+    webResponse = requests.request(
+        "GET", url, headers=headers, data=payload, files=files
+    )
+
+    objJson = json.loads(webResponse.text)
+
+    return objJson["data"]["option-chains"]
