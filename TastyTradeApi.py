@@ -126,3 +126,19 @@ def getFutureOptionChains(apiUrl, token, ticker):
     objJson = json.loads(webResponse.text)
 
     return objJson["data"]["option-chains"]
+
+
+def getStreamerTokens(apiUrl, token):
+    url = apiUrl + "/quote-streamer-tokens"
+
+    payload = {}
+    files = []
+    headers = {"Authorization": token}
+
+    webResponse = requests.request(
+        "GET", url, headers=headers, data=payload, files=files
+    )
+
+    objJson = json.loads(webResponse.text)
+
+    return objJson["data"]
