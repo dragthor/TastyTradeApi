@@ -1,7 +1,6 @@
 import requests
 import json
 
-
 def getSessionAuthorizationToken(apiUrl, email, password):
     url = apiUrl + "/sessions"
 
@@ -142,3 +141,35 @@ def getStreamerTokens(apiUrl, token):
     objJson = json.loads(webResponse.text)
 
     return objJson["data"]
+
+def getEquityStreamerSymbol(apiUrl, token, ticker):
+    url = apiUrl + "/instruments/equities/" + ticker
+
+    payload = {}
+    files = []
+    headers = {"Authorization": token}
+
+    webResponse = requests.request(
+        "GET", url, headers=headers, data=payload, files=files
+    )
+
+    objJson = json.loads(webResponse.text)
+
+    return objJson["data"]["streamer-symbol"]
+
+def getFutureStreamerSymbols(apiUrl, token, ticker):
+    url = apiUrl + "/instruments/futures"
+
+    payload = {}
+    files = []
+    headers = {"Authorization": token}
+
+    webResponse = requests.request(
+        "GET", url, headers=headers, data=payload, files=files
+    )
+
+    objJson = json.loads(webResponse.text)
+
+    items = [p for p in objJson["data"]["items"] if p["product-code"] == ticker]
+
+    return items
