@@ -35,6 +35,10 @@ if exitTastyBot == False:
     for strike in desiredExpiration["strikes"]:
         print(strike)
 
+streamerSymbols = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
+
+print(streamerSymbols)
+
 closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
 
 if closeResult != 204:
