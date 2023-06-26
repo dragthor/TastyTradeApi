@@ -1,33 +1,52 @@
 import TastyTradeApi
+import asyncio
+from DXFeed import *
 
 email = "<YOUR_EMAIL>"
 password = "<YOUR_PASSWORD>"
 apiUrl = "https://api.tastyworks.com"
-ticker = "SPY"
+ticker = "MES"
 authToken = ""
 userName = ""
 liveTradingEnabled = False
 exitTastyBot = False
 
-authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
 
-if len(authToken) == 0:
-    print("Unable to get Tastytrade authorization token.")
+async def main():
+    async def quote_callback(result):
+        print("quote_callback got:", result)
 
-userName = TastyTradeApi.validateSession(apiUrl, authToken)
+    authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
 
-if len(userName) == 0:
-    print("Unable to validate Tastytrade session.")
+    if len(authToken) == 0:
+        print("Unable to get Tastytrade authorization token.")
 
-streamerTokens = TastyTradeApi.getStreamerTokens(apiUrl, authToken)
+    userName = TastyTradeApi.validateSession(apiUrl, authToken)
 
-dxFeedToken = streamerTokens["token"]
-streamerUrl = streamerTokens["streamer-url"]
-websocketUrl = streamerTokens["websocket-url"]
+    if len(userName) == 0:
+        print("Unable to validate Tastytrade session.")
 
-print(dxFeedToken)
+    streamerTokens = TastyTradeApi.getStreamerTokens(apiUrl, authToken)
 
-closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
+    dxFeedToken = streamerTokens["token"]
+    streamerUrl = streamerTokens["streamer-url"]
+    websocketUrl = streamerTokens["websocket-url"] + "/cometd"
 
-if closeResult != 204:
-    print("Unable to close/kill Tastytrade session.")
+    tt_dxfeed = DXFeed(websocketUrl, dxFeedToken)
+
+    await tt_dxfeed.connect()
+
+    # Utilize getFutureStreamerSymbols (or getEquityStreamerSymbol) for proper symbol.
+    await tt_dxfeed.subscribe([DXEvent.QUOTE], ["/MESU23:XCME"])
+
+    await tt_dxfeed.listen(quote_callback)
+
+    await tt_dxfeed.disconnect()
+
+    closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
+
+    if closeResult != 204:
+        print("Unable to close/kill Tastytrade session.")
+
+
+asyncio.run(main())
