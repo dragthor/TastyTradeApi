@@ -1,5 +1,19 @@
 import requests
 import json
+import configparser
+
+
+def readLocalConfig(fileName):
+    config = configparser.ConfigParser()
+    config.read(fileName)
+    config.sections()
+
+    email = config["DEFAULT"]["email"]
+    password = config["DEFAULT"]["password"]
+    apiUrl = config["DEFAULT"]["apiUrl"]
+
+    return dict(email=email, password=password, apiUrl=apiUrl)
+
 
 def getSessionAuthorizationToken(apiUrl, email, password):
     url = apiUrl + "/sessions"
@@ -142,6 +156,7 @@ def getStreamerTokens(apiUrl, token):
 
     return objJson["data"]
 
+
 def getEquityStreamerSymbol(apiUrl, token, ticker):
     url = apiUrl + "/instruments/equities/" + ticker
 
@@ -156,6 +171,7 @@ def getEquityStreamerSymbol(apiUrl, token, ticker):
     objJson = json.loads(webResponse.text)
 
     return objJson["data"]["streamer-symbol"]
+
 
 def getFutureStreamerSymbols(apiUrl, token, ticker):
     url = apiUrl + "/instruments/futures"

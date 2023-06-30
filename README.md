@@ -19,6 +19,10 @@ All communication between TastyTrade and the TastyTrade API Wrapper is encrypted
 `pip install tastyworks-aiocometd`
 `pip install asyncio`
 
+## Configuration
+
+Your Tasty credentials and settings should be stored in a file named `tastytrade.ini`.  Modify, protect, and guard accordingly.
+
 ## Disclaimer
 
 There is no implied warranty for any actions and results which arise from using it.  Any examples, rules, or algorithms are intended for educational purposes only and not financial advice.  Use at your own risk.

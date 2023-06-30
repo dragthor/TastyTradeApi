@@ -1,20 +1,28 @@
 import TastyTradeApi
 import asyncio
+
 from DXFeed import *
 
-email = "<YOUR_EMAIL>"
-password = "<YOUR_PASSWORD>"
-apiUrl = "https://api.tastyworks.com"
+
 ticker = "MES"
-authToken = ""
-userName = ""
+
 liveTradingEnabled = False
-exitTastyBot = False
 
 
 async def main():
+    email = ""
+    password = ""
+    apiUrl = ""
+    authToken = ""
+    userName = ""
+
     async def quote_callback(result):
         print("quote_callback got:", result)
+
+    settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
+    email = settings["email"]
+    password = settings["password"]
+    apiUrl = settings["apiUrl"]
 
     authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
 

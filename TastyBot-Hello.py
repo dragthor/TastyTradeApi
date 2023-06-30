@@ -1,11 +1,13 @@
 import TastyTradeApi
 
-email = "<YOUR_EMAIL>"
-password = "<YOUR_PASSWORD>"
-apiUrl = "https://api.tastyworks.com"
 authToken = ""
 userName = ""
 liveTradingEnabled = False
+
+settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
+email = settings["email"]
+password = settings["password"]
+apiUrl = settings["apiUrl"]
 
 authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
 
