@@ -18,6 +18,7 @@ All communication between TastyTrade and the TastyTrade API Wrapper is encrypted
 
 `pip install tastyworks-aiocometd`
 `pip install asyncio`
+`pip install requests`
 
 ## Configuration
 
