@@ -27,21 +27,27 @@ balances = TastyTradeApi.getAccountBalances(apiUrl, authToken, primaryAccount)
 
 positions = TastyTradeApi.getAccountPositions(apiUrl, authToken, primaryAccount)
 
+cash = float(balances["cash-balance"])
+regTMargin = float(balances["reg-t-margin-requirement"])
+spanMargin = float(balances["futures-margin-requirement"])
+buyPower = round(((regTMargin + spanMargin) / cash) * 100, 2)
+
 print(
-    "----------------------------------------------------------------------------------------"
+    "------------------------------------------------------------------------------------------------------"
 )
 print(
     "Account: "
     + primaryAccount
     + ", Cash: "
-    + balances["cash-balance"]
+    + str(cash)
     + ", Reg-T Margin: "
-    + balances["reg-t-margin-requirement"]
+    + str(regTMargin)
     + ", Futures Margin: "
-    + balances["futures-margin-requirement"]
+    + str(spanMargin)
+    + ", Buying Power: " + str(buyPower) + "%"
 )
 print(
-    "----------------------------------------------------------------------------------------"
+    "------------------------------------------------------------------------------------------------------"
 )
 
 positions.sort(key=lambda x: x["underlying-symbol"])
