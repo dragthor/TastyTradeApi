@@ -1,5 +1,6 @@
 import TastyTradeApi
 import asyncio
+import json
 
 from DXFeed import *
 
@@ -17,7 +18,9 @@ async def main():
     userName = ""
 
     async def quote_callback(result):
-        print("quote_callback got:", result)
+        bid = float(result["data"][1][6])
+        ask = float(result["data"][1][10])
+        print("bid: " + str(bid) + ", ask: " + str(ask))
 
     settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
     email = settings["email"]
@@ -45,6 +48,8 @@ async def main():
     await tt_dxfeed.connect()
 
     # Utilize getFutureStreamerSymbols (or getEquityStreamerSymbol) for proper symbol.
+    # items = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
+
     await tt_dxfeed.subscribe([DXEvent.QUOTE], ["/MESU23:XCME"])
 
     await tt_dxfeed.listen(quote_callback)
