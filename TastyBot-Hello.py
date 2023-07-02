@@ -1,4 +1,5 @@
 import TastyTradeApi
+from datetime import datetime
 
 authToken = ""
 userName = ""
@@ -53,6 +54,11 @@ print(
 positions.sort(key=lambda x: x["underlying-symbol"])
 
 for position in positions:
+    # 2023-08-17T18:30:00.000+00:00
+    expiration = datetime.strptime(position["expires-at"], '%Y-%m-%dT%H:%M:%S.%f+00:00') 
+    today =  datetime.today()
+    dte = abs((today - expiration).days)
+
     print(
         position["underlying-symbol"]
         + "\t"
@@ -63,6 +69,8 @@ for position in positions:
         + position["quantity-direction"]
         + "\t"
         + str(position["expires-at"])
+        + "\t"
+        + str(dte)
     )
 
 closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
