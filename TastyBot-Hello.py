@@ -55,13 +55,13 @@ positions.sort(key=lambda x: x["underlying-symbol"])
 for position in positions:
     print(
         position["underlying-symbol"]
-        + " "
+        + "\t"
         + str(position["quantity"])
-        + " "
+        + "\t"
         + position["symbol"]
-        + " "
+        + "\t"
         + position["quantity-direction"]
-        + " "
+        + "\t"
         + str(position["expires-at"])
     )
 
