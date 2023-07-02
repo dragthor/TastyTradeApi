@@ -40,8 +40,6 @@ if exitTastyBot == False:
 
 streamerSymbols = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
 
-print(streamerSymbols)
-
 closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
 
 if closeResult != 204:
