@@ -28,10 +28,11 @@ balances = TastyTradeApi.getAccountBalances(apiUrl, authToken, primaryAccount)
 
 positions = TastyTradeApi.getAccountPositions(apiUrl, authToken, primaryAccount)
 
-cash = float(balances["cash-balance"])
+netLiquidity = float(balances["net-liquidating-value"])
 regTMargin = float(balances["reg-t-margin-requirement"])
 spanMargin = float(balances["futures-margin-requirement"])
-buyPower = round(((regTMargin + spanMargin) / cash) * 100, 2)
+totalMargin = regTMargin + spanMargin;
+buyPower = round((totalMargin / netLiquidity) * 100, 2)
 
 print(
     "------------------------------------------------------------------------------------------------------"
@@ -39,13 +40,15 @@ print(
 print(
     "Account: "
     + primaryAccount
-    + ", Cash: "
-    + str(cash)
-    + ", Reg-T Margin: "
+    + ", Net Liq: "
+    + str(netLiquidity)
+    + ", Reg-T: "
     + str(regTMargin)
-    + ", Futures Margin: "
+    + ", Futures: "
     + str(spanMargin)
-    + ", Buying Power: " + str(buyPower) + "%"
+    + ", Margin: "
+    + str(totalMargin)
+    + ", BP: " + str(buyPower) + "%"
 )
 print(
     "------------------------------------------------------------------------------------------------------"
