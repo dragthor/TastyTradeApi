@@ -46,7 +46,7 @@ print(
     + str(regTMargin)
     + ", Futures: "
     + str(spanMargin)
-    + ", Margin: "
+    + ", Margin Used: "
     + str(totalMargin)
     + ", BP: " + str(buyPower) + "%"
 )
