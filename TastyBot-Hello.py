@@ -54,7 +54,7 @@ print(
     "------------------------------------------------------------------------------------------------------"
 )
 
-positions.sort(key=lambda x: x["underlying-symbol"])
+positions.sort(key=lambda x: (x["expires-at"], x["underlying-symbol"], x["symbol"]))
 
 for position in positions:
     # 2023-08-17T18:30:00.000+00:00
@@ -70,8 +70,6 @@ for position in positions:
         + position["symbol"]
         + "\t"
         + position["quantity-direction"]
-        + "\t"
-        + str(position["expires-at"])
         + "\t"
         + str(dte)
     )
