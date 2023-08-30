@@ -46,7 +46,7 @@ print(
     + str(regTMargin)
     + ", Futures: "
     + str(spanMargin)
-    + ", Margin Used: "
+    + ", Margin: "
     + str(totalMargin)
     + ", BP: " + str(buyPower) + "%"
 )
@@ -60,7 +60,7 @@ for position in positions:
     # 2023-08-17T18:30:00.000+00:00
     expiration = datetime.strptime(position["expires-at"], '%Y-%m-%dT%H:%M:%S.%f+00:00') 
     today =  datetime.today()
-    dte = abs((today - expiration).days)
+    dte = abs((today - expiration).days) - 1
 
     print(
         position["underlying-symbol"]
