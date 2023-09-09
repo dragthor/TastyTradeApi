@@ -55,12 +55,18 @@ print(
     "------------------------------------------------------------------------------------------------------"
 )
 
+for position in positions:
+    if not "expires-at" in position:
+        position["expires-at"] = "2100-01-01T18:30:00.000+00:00"
+
 positions.sort(key=lambda x: (x["expires-at"], x["underlying-symbol"], x["symbol"]))
 
 for position in positions:
+    today =  datetime.today()
+    closePrice = float(position["close-price"])
+
     # 2023-08-17T18:30:00.000+00:00
     expiration = datetime.strptime(position["expires-at"], '%Y-%m-%dT%H:%M:%S.%f+00:00') 
-    today =  datetime.today()
     dte = abs((today - expiration).days) - 1
 
     print(
@@ -71,6 +77,8 @@ for position in positions:
         + position["symbol"]
         + "\t"
         + position["quantity-direction"]
+        + "\t"
+        + str(closePrice)
         + "\t"
         + str(dte)
     )
