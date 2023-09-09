@@ -1,5 +1,6 @@
 import TastyTradeApi
 from datetime import datetime
+from termcolor import colored, cprint
 
 authToken = ""
 userName = ""
@@ -33,12 +34,17 @@ netLiquidity = float(balances["net-liquidating-value"])
 regTMargin = float(balances["reg-t-margin-requirement"])
 spanMargin = float(balances["futures-margin-requirement"])
 totalMargin = regTMargin + spanMargin;
-buyPower = round((totalMargin / cash) * 100, 2)
+buyPower = round((totalMargin / netLiquidity) * 100, 2)
+
+accountColor = "green"
+
+if buyPower > 50:
+    accountColor = "red"
 
 print(
     "------------------------------------------------------------------------------------------------------"
 )
-print(
+cprint(
     "Cash: "
     + str(cash)
     + ", Net Liq: "
@@ -50,7 +56,8 @@ print(
     + ", Margin: "
     + str(totalMargin)
     + ", BP: " + str(buyPower) + "%"
-)
+, accountColor, "on_black")
+
 print(
     "------------------------------------------------------------------------------------------------------"
 )
