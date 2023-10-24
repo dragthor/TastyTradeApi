@@ -5,7 +5,7 @@ import json
 from DXFeed import *
 
 
-ticker = "MES"
+tickers = [ "SPX" ]
 
 liveTradingEnabled = False
 
@@ -18,9 +18,13 @@ async def main():
     userName = ""
 
     async def quote_callback(result):
-        bid = float(result["data"][1][6])
-        ask = float(result["data"][1][10])
-        print("bid: " + str(bid) + ", ask: " + str(ask))
+        ticker = result["data"][1][0] # Quote
+        bid = float(result["data"][1][6]) # bidPrice
+        ask = float(result["data"][1][10]) # askPrice
+        print(ticker + " - mid: " + str(midpoint(bid, ask)) + ", bid: " + str(bid) + ", ask: " + str(ask))
+
+    def midpoint(bid, ask):
+        return round((bid + (ask - bid) / 2), 2)
 
     settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
     email = settings["email"]
@@ -49,8 +53,9 @@ async def main():
 
     # Utilize getFutureStreamerSymbols (or getEquityStreamerSymbol) for proper symbol.
     # items = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
+    # items = TastyTradeApi.getEquityStreamerSymbol(apiUrl, authToken, ticker)
 
-    await tt_dxfeed.subscribe([DXEvent.QUOTE], ["/MESU23:XCME"])
+    await tt_dxfeed.subscribe([DXEvent.QUOTE], tickers)
 
     await tt_dxfeed.listen(quote_callback)
 
