@@ -1,11 +1,11 @@
 import TastyTradeApi
 import asyncio
-import json
+import time
 
 from DXFeed import *
 
 
-tickers = [ "SPX" ]
+tickers = [ "SPY" ]
 
 liveTradingEnabled = False
 
@@ -52,12 +52,18 @@ async def main():
     await tt_dxfeed.connect()
 
     # Utilize getFutureStreamerSymbols (or getEquityStreamerSymbol) for proper symbol.
-    # items = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
-    # items = TastyTradeApi.getEquityStreamerSymbol(apiUrl, authToken, ticker)
+    # items = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, tickers[0])
+    items = TastyTradeApi.getEquityStreamerSymbol(apiUrl, authToken, tickers[0])
+
+    #print(items)
 
     await tt_dxfeed.subscribe([DXEvent.QUOTE], tickers)
 
-    await tt_dxfeed.listen(quote_callback)
+    seconds = 10
+    t_end = time.time() + seconds
+    
+    while time.time() < t_end:
+        await tt_dxfeed.listen(quote_callback)
 
     await tt_dxfeed.disconnect()
 
