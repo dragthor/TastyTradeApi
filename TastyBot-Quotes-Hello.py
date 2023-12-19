@@ -4,11 +4,13 @@ import time
 
 from DXFeed import *
 
+listen_loop_seconds = 60
+
 # https://symbol-lookup.dxfeed.com/
 
-#tickers = [ ".SPY240119P420", ".SPY240216P420" ]
+# tickers = [ ".SPY240216P400", ".SPY240216C500" ]
 
-tickers = [ ".SPX240119P4200", ".SPX240216P4200" ]
+tickers = [ ".SPX240216P4000", ".SPX240216C5000" ]
 
 
 liveTradingEnabled = False
@@ -22,24 +24,37 @@ async def main():
     userName = ""
 
     async def quote_callback(result):
-        t = result["data"][0][0]
-        ticker = result["data"][1][0]
+        t = result["data"][0]
 
-        if t == "Quote":    
-            bid = float(result["data"][1][6]) # bidPrice
-            ask = float(result["data"][1][10]) # askPrice
-            print(ticker + " - mid: " + str(midpoint(bid, ask)) + ", bid: " + str(bid) + ", ask: " + str(ask))
-                
-        if t == "Greeks":
-            volatility = float(result["data"][1][7]) # volatility 
-            delta = float(result["data"][1][8]) # delta
-            theta = float(result["data"][1][10]) # theta
-            vega = float(result["data"][1][12]) # vega
-            gamma = float(result["data"][1][9]) # gamma
-            rho = float(result["data"][1][11]) # rho
+        if t == "Quote":
+            for i in range(len(result["data"])):
+                try:
+                    if (i == 0):
+                        continue
 
-            print(ticker + " - d: " + str(delta) + " t: " + str(theta) + " v: " + str(vega) + " g: " + str(gamma) + " r: " + str(rho) + " iv: " + str(volatility))
-        
+                    ticker = result["data"][i][0]
+                    bid = float(result["data"][i][6]) # bidPrice
+                    ask = float(result["data"][i][10]) # askPrice
+                    
+                    print(ticker + " - mid: " + str(midpoint(bid, ask)) + ", bid: " + str(bid) + ", ask: " + str(ask))
+                except:
+                    print("error looping over quotes results data")
+
+        elif t == "Greeks":
+            try:
+                j = 1
+                ticker = result["data"][j][0]
+                volatility = float(result["data"][j][7]) # volatility 
+                delta = float(result["data"][j][8]) # delta
+                theta = float(result["data"][j][10]) # theta
+                vega = float(result["data"][j][12]) # vega
+                gamma = float(result["data"][j][9]) # gamma
+                rho = float(result["data"][j][11]) # rho
+
+                print(ticker + " - d: " + str(delta) + " t: " + str(theta) + " v: " + str(vega) + " g: " + str(gamma) + " r: " + str(rho) + " iv: " + str(volatility))
+            except:
+                print("error looping over greeks results data")
+
     def midpoint(bid, ask):
         return round((bid + (ask - bid) / 2), 2)
 
@@ -68,17 +83,9 @@ async def main():
 
     await tt_dxfeed.connect()
 
-
-    # Utilize getFutureStreamerSymbols (or getEquityStreamerSymbol) for proper symbol.
-    # items = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, tickers[0])
-    # items = TastyTradeApi.getEquityStreamerSymbol(apiUrl, authToken, tickers[0])
-
-    #print(items)
-
     await tt_dxfeed.subscribe([DXEvent.QUOTE, DXEvent.GREEKS], tickers)
 
-    seconds = 10
-    t_end = time.time() + seconds
+    t_end = time.time() + listen_loop_seconds
     
     while time.time() < t_end:
         await tt_dxfeed.listen(quote_callback)
