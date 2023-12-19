@@ -1,4 +1,4 @@
-import TastyTradeApi
+import TastyTradeApi as tasty
 
 
 ticker = "MES"
@@ -7,23 +7,23 @@ userName = ""
 liveTradingEnabled = False
 exitTastyBot = False
 
-settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
+settings = tasty.readLocalConfig("tastytrade.ini")
 email = settings["email"]
 password = settings["password"]
 apiUrl = settings["apiUrl"]
 
-authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
+authToken = tasty.getSessionAuthorizationToken(apiUrl, email, password)
 
 if len(authToken) == 0:
     print("Unable to get Tastytrade authorization token.")
 
-userName = TastyTradeApi.validateSession(apiUrl, authToken)
+userName = tasty.validateSession(apiUrl, authToken)
 
 if len(userName) == 0:
     print("Unable to validate Tastytrade session.")
 
 if exitTastyBot == False:
-    optionChains = TastyTradeApi.getFutureOptionChains(apiUrl, authToken, ticker)
+    optionChains = tasty.getFutureOptionChains(apiUrl, authToken, ticker)
 
     # Find expiration between 40 and 60 days.
     for chain in optionChains:
@@ -38,9 +38,9 @@ if exitTastyBot == False:
     for strike in desiredExpiration["strikes"]:
         print(strike)
 
-streamerSymbols = TastyTradeApi.getFutureStreamerSymbols(apiUrl, authToken, ticker)
+streamerSymbols = tasty.getFutureStreamerSymbols(apiUrl, authToken, ticker)
 
-closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
+closeResult = tasty.closeSession(apiUrl, authToken)
 
 if closeResult != 204:
     print("Unable to close/kill Tastytrade session.")

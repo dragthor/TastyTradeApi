@@ -1,33 +1,32 @@
-import TastyTradeApi
+import TastyTradeApi as tasty
 from datetime import datetime
-from termcolor import colored, cprint
 
 authToken = ""
 userName = ""
 liveTradingEnabled = False
 
-settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
+settings = tasty.readLocalConfig("tastytrade.ini")
 email = settings["email"]
 password = settings["password"]
 apiUrl = settings["apiUrl"]
 
-authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
+authToken = tasty.getSessionAuthorizationToken(apiUrl, email, password)
 
 if len(authToken) == 0:
     print("Unable to get Tastytrade authorization token.")
 
-userName = TastyTradeApi.validateSession(apiUrl, authToken)
+userName = tasty.validateSession(apiUrl, authToken)
 
 if len(userName) == 0:
     print("Unable to validate Tastytrade session.")
 
-accounts = TastyTradeApi.getCustomerAccounts(apiUrl, authToken)
+accounts = tasty.getCustomerAccounts(apiUrl, authToken)
 
 primaryAccount = accounts[0]["account"]["account-number"]
 
-balances = TastyTradeApi.getAccountBalances(apiUrl, authToken, primaryAccount)
+balances = tasty.getAccountBalances(apiUrl, authToken, primaryAccount)
 
-positions = TastyTradeApi.getAccountPositions(apiUrl, authToken, primaryAccount)
+positions = tasty.getAccountPositions(apiUrl, authToken, primaryAccount)
 
 cash = float(balances["cash-balance"])
 netLiquidity = float(balances["net-liquidating-value"])
@@ -36,15 +35,10 @@ spanMargin = float(balances["futures-margin-requirement"])
 totalMargin = regTMargin + spanMargin;
 buyPower = round((totalMargin / netLiquidity) * 100, 2)
 
-accountColor = "green"
-
-if buyPower > 50:
-    accountColor = "red"
-
 print(
     "------------------------------------------------------------------------------------------------------"
 )
-cprint(
+print(
     "Cash: "
     + str(cash)
     + ", Net Liq: "
@@ -56,7 +50,7 @@ cprint(
     + ", Margin: "
     + str(totalMargin)
     + ", BP: " + str(buyPower) + "%"
-, accountColor, "on_black")
+)
 
 print(
     "------------------------------------------------------------------------------------------------------"
@@ -90,7 +84,7 @@ for position in positions:
         + str(dte)
     )
 
-closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
+closeResult = tasty.closeSession(apiUrl, authToken)
 
 if closeResult != 204:
     print("Unable to close/kill Tastytrade session.")
