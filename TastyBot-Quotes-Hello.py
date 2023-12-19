@@ -1,4 +1,4 @@
-import TastyTradeApi
+import TastyTradeApi as tasty
 import asyncio
 import time
 
@@ -58,22 +58,22 @@ async def main():
     def midpoint(bid, ask):
         return round((bid + (ask - bid) / 2), 2)
 
-    settings = TastyTradeApi.readLocalConfig("tastytrade.ini")
+    settings = tasty.readLocalConfig("tastytrade.ini")
     email = settings["email"]
     password = settings["password"]
     apiUrl = settings["apiUrl"]
 
-    authToken = TastyTradeApi.getSessionAuthorizationToken(apiUrl, email, password)
+    authToken = tasty.getSessionAuthorizationToken(apiUrl, email, password)
 
     if len(authToken) == 0:
         print("Unable to get Tastytrade authorization token.")
 
-    userName = TastyTradeApi.validateSession(apiUrl, authToken)
+    userName = tasty.validateSession(apiUrl, authToken)
 
     if len(userName) == 0:
         print("Unable to validate Tastytrade session.")
 
-    streamerTokens = TastyTradeApi.getStreamerTokens(apiUrl, authToken)
+    streamerTokens = tasty.getStreamerTokens(apiUrl, authToken)
 
     dxFeedToken = streamerTokens["token"]
     streamerUrl = streamerTokens["streamer-url"]
@@ -92,7 +92,7 @@ async def main():
 
     await tt_dxfeed.disconnect()
 
-    closeResult = TastyTradeApi.closeSession(apiUrl, authToken)
+    closeResult = tasty.closeSession(apiUrl, authToken)
 
     if closeResult != 204:
         print("Unable to close/kill Tastytrade session.")
