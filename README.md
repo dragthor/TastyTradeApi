@@ -14,13 +14,15 @@ Never give your password to anyone.  This code is open source.  You can verify t
 
 All communication between TastyTrade and the TastyTrade API Wrapper is encrypted using SSL.
 
+## Currently Using
+
+`python 3.11`
+
+`pip 23.3.2`
+
 ## Installation
 
-`pip install tastyworks-aiocometd`
-
-`pip install asyncio`
-
-`pip install requests`
+`pip install -r requirements.txt`
 
 ## Configuration
 
